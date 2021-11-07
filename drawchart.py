@@ -9,7 +9,7 @@ class cDrawChart(object):
     """convert data time from text labels
         calc deltas
     """
-    def __init__(self,width=800,height=600,margin=(5,5,5,5),fg_color=(0,0,255,255),bg_color=(255,255,255,255)): #margin left,right,top,bottom
+    def __init__(self,width=800,height=600,margin=config.mrgine,fg_color=(0,0,255,255),bg_color=(255,255,255,255)): #margin left,right,top,bottom
         self.lines = [] #( ((x[],y[]), color),..)
         self.texts = [] #( ('text',(x,y),text_size,mode,alignment,font_type,font_size,color), ..)   mode: pixel_a / pixel_r / data - how to calculate coordinates, alignment - ('left','top')
                         #      0     1      2        3       4          5       6        7
@@ -54,7 +54,7 @@ class cDrawChart(object):
 
         #add into the list for rendering
         self.texts.append((text,coor,text_size,mode,alignment,font_type,font_size,color))
-
+            
     def AddLine(self,data,color='default'):
         if 'default' == color:
             color = self.draw_color
