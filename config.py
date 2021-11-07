@@ -14,8 +14,6 @@ text_color =  (0,  0,  0,  255)  #black, non-transparent
 
 chart_pen_width = 2
 
-#chart_font_type = "./font/arial.ttf"
-#chart_font_type = "./font/Guru-Regular.otf"
 chart_font_type = root_path + "GothamSSm-Book.otf"
 chart_font_size = 16
 
