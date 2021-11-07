@@ -4,7 +4,6 @@ from itertools import izip
 import config
 import operator
 
-
 class cDrawChart(object):
     """convert data time from text labels
         calc deltas
@@ -13,30 +12,30 @@ class cDrawChart(object):
         self.lines = [] #( ((x[],y[]), color),..)
         self.texts = [] #( ('text',(x,y),text_size,mode,alignment,font_type,font_size,color), ..)   mode: pixel_a / pixel_r / data - how to calculate coordinates, alignment - ('left','top')
                         #      0     1      2        3       4          5       6        7
-        self.data = []
+        self.onscreen_texts = [] # ( ("text",(coor_x,coor_y),(scale_x,scale_y),align,font,size,color) , (...) )
+                                 #       0           1              2            3    4    5     6        
         self.scale_x =0
         self.scale_y =0
         self.min_x = 0
         self.max_x = 0
         self.min_y = 0
-        self.max_x = 0
-        self.margin = margin
+        self.max_y = 0
+        self.margin = margin        
         self.width = width
-        self.height = height
+        self.height = height        
         self.draw_color = fg_color
         self.bgc = bg_color
         self.image = 0
         self.draw_area = 0
-        self.onscreen_texts = [] # ( ("text",(coor_x,coor_y),(scale_x,scale_y),align,font,size,color) , (...) )
-                                 #       0           1              2            3    4    5     6        
+        self.axis_x = []
+        self.axis_y = []
 
     def Resize(self,size,margin='default'):
         if 'default' != margin:
             self.margin = margin
         self.width = size[0]
         self.height = size[1]
-        
-                                 
+                                         
     def AddTexts(self,text,coor,mode='default',alignment='default',font_type='default',font_size=config.chart_font_size,color='default'):
         if 'default' == mode:
             mode = 'data'
@@ -128,8 +127,62 @@ class cDrawChart(object):
             text_font = ImageFont.truetype(text[5],text[6])
             self.draw_area.text((text_x,text_y),text[0],text[7],font = text_font)        
 
-    def RenderAxes(self):
+    def ConfigAxis(self, mode='default', levels='default'):
+        #TODO
+        # ConfigAxis configure axis parameters
+        # mode: (axis_x, axis_y), axis_x - "left,rigth,float", axis_y - "top, bottom, float"
+        # if "float" - you need to set levels
+        # float can be "absolute, relative and data
+        if 'default' == mode: # left,bottom
+            mode = ('left','bottom')
+        
+        if 'default'!= levels:
+            self.axis_y = (mode[0])  #TODO set axis levels
+            self.axis_x = (mode[1])
+        else:
+            self.axis_y = (mode[0],levels) # levels = 'default'
+            self.axis_x = (mode[1],levels)
         return 0
+
+    def RenderAxis(self):
+        # RenderAxis - create lines to show axis
+        # lines can be left/right/top/bottom - 1 pixel in the margin. if axis are 'float' - levels must be specified
+        # levels could be absolute/relative/data. Absolute - in pixels, Relative in % to size, data - linked with actual data values and need to be normalized.
+        # level processing is TODO
+        if not self.axis_x: return 0  # if axis not set
+        if not self.axis_y: return 0  # if axis not set
+
+        draw_x = []
+        draw_y = []
+
+        if 'bottom' == self.axis_x[0]:
+            draw_x.append(self.margin[0] - 1)
+            draw_y.append(self.height - self.margin[3] + 1)
+            draw_x.append(self.width -  self.margin[0] - self.margin[1] +2)
+            draw_y.append(self.height - self.margin[3] + 1)
+            self.draw_area.line(list(izip(draw_x, draw_y)), fill=config.axis_color, width=config.axis_pen_width)
+        elif 'top' == self.axis_x[0]:
+            draw_x.append(self.margin[0] - 1)
+            draw_y.append(self.margin[3] - 1)
+            draw_x.append(self.width -  self.margin[0] - self.margin[1] +2)
+            draw_y.append(self.margin[3] - 1)
+            self.draw_area.line(list(izip(draw_x, draw_y)), fill=config.axis_color, width=config.axis_pen_width)
+
+
+        del draw_x [:]
+        del draw_y [:]
+        if 'left' == self.axis_y[0]:
+            draw_x.append(self.margin[0] - 1)
+            draw_y.append(self.margin[1] - 1)
+            draw_x.append(self.margin[0] - 1)
+            draw_y.append(self.height - self.margin[3] + 1 )
+            self.draw_area.line(list(izip(draw_x, draw_y)), fill=config.axis_color, width=config.axis_pen_width)        
+        elif 'right' == self.axis_y[0]:
+            draw_x.append(self.width -  self.margin[0] - self.margin[1] +2)
+            draw_y.append(self.margin[1] - 1)
+            draw_x.append(self.width -  self.margin[0] - self.margin[1] +2)
+            draw_y.append(self.height - self.margin[3] + 1 )
+            self.draw_area.line(list(izip(draw_x, draw_y)), fill=config.axis_color, width=config.axis_pen_width)        
 
     def RenderData(self): #use lines and draw all of them
         self.image = Image.new('RGBA', (self.width, self.height), self.bgc)
@@ -159,10 +212,8 @@ class cDrawChart(object):
 
         self.RenderLines()
         self.RenderTexts()
-        self.RenderAxes()
-
+        self.RenderAxis()
         return 0
-
 
     def SaveImageToFile(self, filename, path = config.root_path):
         self.image.save(path + filename)

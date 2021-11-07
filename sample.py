@@ -18,6 +18,11 @@ draw.AddTexts('TITLE',(50,0),mode='pixel_r',alignment=('middle','middle'),color=
 
 draw_list = list(izip(x, y))
 draw.AddLine(draw_list,(0,255,0,255))
-
+draw.ConfigAxis() #default axis - left/bottom
 draw.RenderData()
 draw.SaveImageToFile('square.png',path='./')
+
+draw.Resize((1920,1080))
+draw.RenderData()
+draw.SaveImageToFile('square1920.png',path='./')
+
