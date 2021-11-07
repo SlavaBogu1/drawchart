@@ -7,7 +7,9 @@ y = []
 for i in range(-10, 11):
     d = i * 0.1
     x.append(d)
-    y.append(d*d)
+    if 0 == d:
+        continue
+    y.append(1 / d)
 
 draw = cDrawChart()
 
