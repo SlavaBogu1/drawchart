@@ -27,8 +27,6 @@ class cDrawChart(object):
         self.bgc = bg_color
         self.image = 0
         self.draw_area = 0
-        #self.image = Image.new('RGBA', (width, height), bg_color)
-        #self.draw_area = ImageDraw.Draw(self.image)
         self.onscreen_texts = [] # ( ("text",(coor_x,coor_y),(scale_x,scale_y),align,font,size,color) , (...) )
                                  #       0           1              2            3    4    5     6        
 
@@ -57,22 +55,6 @@ class cDrawChart(object):
         #add into the list for rendering
         self.texts.append((text,coor,text_size,mode,alignment,font_type,font_size,color))
 
-
-    def ScaleData(self,(x_list,y_list)):
-        min_x = min(x_list)
-        max_x = max(x_list)
-        delta_x = float(max_x) - float(min_x)
-        min_y = min(y_list)
-        max_y = max(y_list)
-        delta_y = float(max_y) - float(min_y)
-        return (delta_x,delta_y)
-
-    def ScaleMe(self,data_list,fit_range):
-        mn = min(data_list)
-        mx = max(data_list)
-        delta = float(mx) - float(mn)
-        return (mn,mx,float(fit_range)/delta) #calcilate scale to use multimpication instead of division
-
     def GetCoor(self,val,margin_id,scale):
         #calculate coordinate on screen with cales
         #margin is the left or top border size
@@ -92,16 +74,6 @@ class cDrawChart(object):
 
         coord = range - int(margin + (val - offset) * scale)
         return coord
-
-    def FindXbyY(self,y):
-        first, second = zip(*self.data)
-        id_y = second.index(y)
-        return first[id_y]
-
-    def FindYbyX(self,x):
-        first, second = zip(*self.data)
-        id_x = first.index(x)
-        return second[id_x]
 
     def AddLine(self,data,color='default'):
         if 'default' == color:
@@ -211,70 +183,6 @@ class cDrawChart(object):
 
         return 0
 
-    def DrawData_old(self,data,color='default'):
-        if 'default' == color:
-            color = self.draw_color
-       
-        if not self.data:
-            self.data = data
-        else: 
-            self.data.append(data)
-
-        first, second = zip(*self.data)
-        self.min_x, self.max_x, self.scale_x = self.ScaleMe(first,self.width - self.margin[0] - self.margin[1])  # max - min / screen size. 
-        self.min_y, self.max_y, self.scale_y = self.ScaleMe(second,self.height - self.margin[2] - self.margin[3])
-
-        coor_x = []
-        coor_y = []
-        count = 0
-        for el in first:
-            new_x = self.GetCoor(el,'Left',self.scale_x)  #convert value into coordinate inside the chart
-            if 0 != len(coor_x) and new_x == coor_x[-1]: #first condition to check if it is the first element, second - to skip the same x-coordinates
-               continue
-            else:
-                coor_x.append(new_x)
-                coor_y.append(self.GetCoor(second[count],'Top', self.scale_y))
-            count = count + 1
-            
-        self.draw_area.line(list(izip(coor_x, coor_y)), fill=color, width=2)  # fill - color 0:black 255: white,  !!! joint = "curve" - to make lines smooth - doesnt supported at hostgator
-
-    def DrawTexts(self):
-        for text in self.onscreen_texts:
-            #correct scales if they were updated  TODO if needed
-            #if text[2][0] != self.scale_x or  text[2][1] != self.scale_y:
-            #    actual_scale_x = self.scale_x
-            #    actual_scale_y = self.scale_y
-            #else:
-            #    actual_scale_x = self.scale_x
-            #    actual_scale_y = self.scale_y
-
-            #text[4] - font type, text[5] - font size
-            chart_font = ImageFont.truetype(text[4], text[5])
-            text_width = chart_font.getsize(text[0])[0]
-            text_height = chart_font.getsize(text[0])[1]
-
-            if 'rigth' == text[3][0]:
-                h_align = -text_width
-            elif 'middle' == text[3][0]:
-                h_align = -(text_width>>1)
-            else: #'left' is default alignment
-                h_align = 0
-
-            if 'top' == text[3][1]:
-                v_align = text_height
-            elif 'middle' == text[3][1]:
-                v_align = text_height>>1
-            else: #'bottom' is default alignment
-                v_align = 0
-
-            x =  self.margin[0]+ h_align + int((text[1][0]-self.min_x)  * self.scale_x)  
-            y =  self.height + v_align - int((text[1][1]-self.min_y) * self.scale_y) - self.margin[2] - self.margin[3]
-            self.draw_area.text((x, y),text[0],text[6],font=chart_font)
-
-    def AddText(self,text,coor,align=('left','top'),color=(255,255,255,255),font=config.chart_font_type,size = config.chart_font_size):
-        #Add text into the text records and then draw all texts
-        self.onscreen_texts.append( (text,coor,(self.scale_x,self.scale_y),align,font,size,color))
-        self.DrawTexts()
 
     def SaveImageToFile(self, filename, path = config.root_path):
         self.image.save(path + filename)
