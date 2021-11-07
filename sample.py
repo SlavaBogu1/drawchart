@@ -4,7 +4,7 @@ from itertools import izip
 x = []
 y = []
 
-for i in range(-10, 10):
+for i in range(-10, 11):
     d = i * 0.1
     x.append(d)
     y.append(d*d)
