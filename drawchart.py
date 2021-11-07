@@ -55,26 +55,6 @@ class cDrawChart(object):
         #add into the list for rendering
         self.texts.append((text,coor,text_size,mode,alignment,font_type,font_size,color))
 
-    def GetCoor(self,val,margin_id,scale):
-        #calculate coordinate on screen with cales
-        #margin is the left or top border size
-        #val - the value to draw (not scaled yet)
-        #min and scale are numbers for scaling
-        if 'Left' == margin_id:
-            margin = self.margin[0]
-            offset = self.min_x
-            range = self.width
-        elif 'Top' == margin_id:
-            margin = self.margin[2]
-            offset = self.min_y
-            range = self.height
-        else:
-            # generate error - wrong direction
-            return 0
-
-        coord = range - int(margin + (val - offset) * scale)
-        return coord
-
     def AddLine(self,data,color='default'):
         if 'default' == color:
             color = self.draw_color
