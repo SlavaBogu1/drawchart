@@ -1,9 +1,6 @@
 root_path = "./"
 
-
-#TODO  error with drawing. top and bottom are mixedup instead of scaling chart is just shifting. 
-#workaround: Use equal numbers by now.
-mrgine = (5,5,5,5)
+margin = (5,5,5,5)
 
 pixel_scale = 1 #sensitivity to data visualisation. 1 - every pixel, 2 - two pixels, 3 - three ... 
 
