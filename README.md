@@ -54,3 +54,11 @@ NOTE: 'float" mode is to be implemented.
 
 CONFIG
 Most of configuration parametes are listed in the config.py file. 
+
+
+SAMPLES:
+1) Line with text to show alingment modes
+![lines](https://user-images.githubusercontent.com/22292864/141677704-b113f683-b304-4b0e-ba71-7eeb133ae79d.png)
+
+2) draw two graphics in different colors with text labels and axis
+![square](https://user-images.githubusercontent.com/22292864/141677732-86098edc-d20f-40b1-a95d-d9d1e0dfa521.png)
