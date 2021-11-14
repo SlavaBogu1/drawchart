@@ -101,19 +101,21 @@ class cDrawChart(object):
             else: #'data' is default behavior
                 text_x = self.margin[0] + (text[1][0] - self.min_x) * self.scale_x
                 text_y = self.height - self.margin[3] - (text[1][1] - self.min_y) * self.scale_y
-            #alignments
+            
+            #h alignments
             if 'middle' == text[4][0]:
                 a_x = -(text[2][0] >> 1)
             elif 'right' == text[4][0]:
                 a_x = -text[2][0]
             else: #left is default
                 a_x = 0
+            #v alignments
             if 'middle' == text[4][1]:
-                a_y = -(text[2][1] >> 1)
-            elif 'bottom' == text[4][1]:
-                a_y = -text[2][1]
-            else: #top is default
                 a_y = 0
+            elif 'bottom' == text[4][1]:
+                a_y = text[2][1]>>1
+            else: #top is default
+                a_y = -(text[2][1] >> 1)
             text_x += a_x
             text_y += a_y
             #Syntax:  ImageDraw.Draw.text(xy, text, fill=None, font=None, anchor=None, spacing=0, align='left')
@@ -202,10 +204,21 @@ class cDrawChart(object):
         #this probably not needed anymore ... 
         self.min_x = min(min_x)
         self.max_x = max(max_x)
-        dx = self.max_x - self.min_x
+        dx = float (self.max_x - self.min_x) 
+
         self.min_y = min(min_y)
         self.max_y = max(max_y)
-        dy = self.max_y - self.min_y
+        dy = float (self.max_y - self.min_y)
+
+        if 0 ==dx: #just one vertical line we should make it in the center of the chart
+            self.max_x = 2*self.min_x
+            dy = float(self.min_x)
+            self.min_x = 0
+
+        if 0 ==dy: #just one horizontal line we should make it in the center of the chart
+            self.max_y = 2*self.min_y
+            dy = float(self.min_y)
+            self.min_y = 0
 
         self.scale_x = (self.width - self.margin[0] - self.margin[1]) / dx
         self.scale_y = (self.height - self.margin[2] - self.margin[3]) / dy
