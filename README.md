@@ -8,6 +8,21 @@ The goals are:
 - add title
 - support re-sizing 
 
+PREREQUISITE
+1) pillow graphic library (https://pillow.readthedocs.io/en/stable/)
+  import PIL
+  from PIL import Image, ImageFont, ImageDraw
+
+2) Functions creating iterators for efficient looping  (https://docs.python.org/3/library/itertools.html)
+from itertools import izip  
+
+3)  Standard operators as functions (https://docs.python.org/3/library/operator.html)
+import operator
+
+4) Configuration file from the project (config.py)
+import config
+
+
 Approach:
 First, you need to create an object of the class to store all data
 Second, you need to add lines (list of coordinates (x,y)) to be drawn
