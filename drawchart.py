@@ -113,11 +113,11 @@ class cDrawChart(object):
                 a_x = 0
             #v alignments
             if 'middle' == text[4][1]:
-                a_y = 0
-            elif 'bottom' == text[4][1]:
-                a_y = text[2][1]>>1
-            else: #top is default
                 a_y = -(text[2][1] >> 1)
+            elif 'bottom' == text[4][1]:                
+                a_y = 0
+            else: #top is default
+                a_y = -text[2][1]
             text_x += a_x
             text_y += a_y
             #Syntax:  ImageDraw.Draw.text(xy, text, fill=None, font=None, anchor=None, spacing=0, align='left')
