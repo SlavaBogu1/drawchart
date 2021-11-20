@@ -64,7 +64,7 @@ class cDrawChart(object):
         for line in self.lines:
             x,y = zip(*line[0])
             #normilize x and y coordinates: substract the minimum x and y from all lines.
-            xn = [self.min_x] * len(x)
+            xn = [self.min_x] * len(x)  #to optimize persormance we will use map operator. First - create the array of elements, then apply the math operations to array elements.
             yn = [self.min_y] * len(y)
             draw_x = list(map(operator.sub,x,xn))
             draw_y = list(map(operator.sub,y,yn))
@@ -74,8 +74,10 @@ class cDrawChart(object):
             draw_x = list(map(operator.mul,draw_x,xn))
             draw_y = list(map(operator.mul,draw_y,yn))
             #normilize x and y coordinates: add left margin (in pixels) to x and move move y to bottom of the screen
-            xn = [self.margin[0]] * len(x)
-            yn = [self.height + self.margin[3]] * len(y)
+            mx = self.margin[0]
+            xn = [mx] * len(x)
+            my = self.height - self.margin[3]
+            yn = [my] * len(y)
             draw_x = list(map(operator.add,draw_x,xn))
             draw_y = list(map(operator.sub,yn,draw_y))
             self.draw_area.line(list(izip(draw_x, draw_y)), fill=line[1], width=config.chart_pen_width)        
