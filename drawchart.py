@@ -162,7 +162,7 @@ class cDrawChart(object):
         if 'bottom' == self.axis_x[0]:
             draw_x.append(self.margin[0] - 1)
             draw_y.append(self.height - self.margin[3] + 1)
-            draw_x.append(self.width -  self.margin[0] - self.margin[1] +2)
+            draw_x.append(self.width -  self.margin[1] + 1)
             draw_y.append(self.height - self.margin[3] + 1)
             self.draw_area.line(list(izip(draw_x, draw_y)), fill=config.axis_color, width=config.axis_pen_width)
         elif 'top' == self.axis_x[0]:
